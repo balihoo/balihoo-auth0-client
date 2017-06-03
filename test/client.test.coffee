@@ -1,39 +1,3 @@
-#BalihooAuth0Client = require("../src/client").BalihooAuth0Client
-#auth0 = require "auth0"
-#assert = require "assert"
-#
-#DOMAIN = "balihoo.auth0.com"
-#CLIENT_ID = "someclientID"
-#CLIENT_SECRET = "someclientsecret"
-#LOGIN_REDIRECT_URL = "http://localhost:3000/login"
-#LOGOUT_REDIRECT_URL = "http://localhost:3000/logout"
-#
-#client = null
-#
-#describe "BalihooAuth0Client unit tests", ->
-#  beforeEach ->
-#    client = new BalihooAuth0Client
-#      domain: DOMAIN
-#      clientId: CLIENT_ID
-#      clientSecret: CLIENT_SECRET
-#      loginRedirectUrl: LOGIN_REDIRECT_URL
-#      logoutRedirectUrl: LOGOUT_REDIRECT_URL
-#
-#  context "constructor", ->
-#    it "instantiates a BalihooAuth0Client which extends an auth0 AuthenticationClient", ->
-#      assert client instanceof BalihooAuth0Client
-#      assert client instanceof auth0.AuthenticationClient
-#
-#  context "getLoginUrl", ->
-#    it "returns the login URL", ->
-#      expected = "https://#{DOMAIN}/authorize?response_type=code&client_id=#{CLIENT_ID}&redirect_uri=#{LOGIN_REDIRECT_URL}"
-#      assert.equal client.getLoginUrl(), expected
-#
-#  context "getLogoutUrl", ->
-#    it "returns the logout URL", ->
-#      expected = "https://#{DOMAIN}/v2/logout?returnTo=#{LOGOUT_REDIRECT_URL}&client_id=#{CLIENT_ID}"
-#      assert.equal client.getLogoutUrl(), expected
-
 clone = require 'clone'
 chai = require 'chai'
 expect = chai.expect

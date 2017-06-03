@@ -47,7 +47,7 @@ class BalihooAuth0Client extends AuthenticationClient
     p.nodeify callback if callback
     p
 
-  handleLoginCallback: (code, callback) ->
+  handleLoginCallback: (code, callback=null) ->
     # Ensure the promise from request-promise is a bluebird promise
     p = Promise.resolve @getAccessToken code
     .then (access_token) =>

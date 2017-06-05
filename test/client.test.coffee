@@ -28,7 +28,51 @@ describe "BalihooAuth0Client tests", ->
         cookieName: "auth0Session"
       code: "code"
       accessToken: "accessToken"
-      profile: "some profile"
+      profile:
+        'email': 'jdoe@balihoo.com'
+        'picture': 'https://s.gravatar.com/avatar/a1440476c6c0980013ecd23ce20a5cbd?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fjf.png'
+        'nickname': 'jdoe'
+        'name': 'jdoe@balihoo.com'
+        'groups': [
+          'LMC Admins'
+          'brand-all Brands'
+        ]
+        'roles': [
+          'brand-allBrands'
+          'campaigns-full-access'
+        ]
+        'permissions': [
+          'brand-demo'
+          'brand-test'
+          'someapp-access'
+          'someapp-edit'
+          'anotherapp-admin'
+        ]
+        'email_verified': false
+        'user_id': 'auth0|58c84bae3c9c2b7caff62252'
+        'clientID': "apiId"
+        'identities': [
+          'user_id': 'abc123123kjasdlkfj'
+          'provider': 'auth0'
+          'connection': 'Username-Password-Authentication'
+          'isSocial': false
+        ]
+        'updated_at': '2017-06-04T00:25:52.011Z'
+        'created_at': '2017-03-14T19:59:42.734Z'
+        'sub': 'auth0|abc123123kjasdlkfj'
+
+    fix.profileExpected = clone fix.profile
+    fix.profileExpected.userdata =
+      brand:
+        demo: true
+        test: true
+      app:
+        someapp:
+          access: true
+          edit: true
+        anotherapp:
+          admin: true
+
 
     client = new BalihooAuth0Client fix.options
 
@@ -77,7 +121,7 @@ describe "BalihooAuth0Client tests", ->
 
   describe "getUserInfo()", ->
     beforeEach ->
-      rp = mocks.stub().resolves fix.profile
+      rp = mocks.stub().resolves clone fix.profile
       balihooAuth0Client.__set__ 'rp', rp
 
     it "should call the request promise with expected values", ->
@@ -92,11 +136,13 @@ describe "BalihooAuth0Client tests", ->
       ]
 
     it "should resolve to the user profile", ->
-      expect(client.getUserInfo fix.accessToken).to.eventually.become fix.profile
+      client.getUserInfo fix.accessToken
+      .then (result) ->
+        expect(result).to.deep.equal fix.profileExpected
 
     it "works with a callback", (done) ->
       client.getUserInfo fix.accessToken, (err, result) ->
-        expect(result).to.equal fix.profile
+        expect(result).to.deep.equal fix.profileExpected
         done err, result
 
       null # Mocha can't handle returning a promise and calling a callback
@@ -104,7 +150,7 @@ describe "BalihooAuth0Client tests", ->
   describe "handleLoginCallback()", ->
     beforeEach ->
       mocks.stub(client, "getAccessToken").resolves fix.accessToken
-      mocks.stub(client, "getUserInfo").resolves fix.profile
+      mocks.stub(client, "getUserInfo").resolves clone fix.profile
 
     it "should call getAccess token", ->
       client.handleLoginCallback fix.code
@@ -118,11 +164,13 @@ describe "BalihooAuth0Client tests", ->
         expect(client.getUserInfo.firstCall.args).to.deep.equal [fix.accessToken]
 
     it "should resolve with the expected profile", ->
-      expect(client.handleLoginCallback fix.code).to.eventually.become fix.profile
+      client.handleLoginCallback fix.code
+      .then (result) ->
+        expect(result).to.deep.equal fix.profile
 
     it "works with a callback", (done) ->
       client.handleLoginCallback fix.code, (err, result) ->
-        expect(result).to.equal fix.profile
+        expect(result).to.deep.equal fix.profile
         done err, result
 
       null # Mocha can't handle returning a promise and calling a callback

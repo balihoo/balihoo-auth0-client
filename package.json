@@ -1,6 +1,6 @@
 {
   "name": "balihoo-auth0-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Auth0 client",
   "main": "lib/client.js",
   "directories": {

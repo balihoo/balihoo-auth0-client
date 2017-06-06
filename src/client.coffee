@@ -1,6 +1,7 @@
 Promise = require "bluebird"
 AuthenticationClient = require("auth0").AuthenticationClient
 rp = require "request-promise"
+objectPath = require "object-path"
 
 class BalihooAuth0Client extends AuthenticationClient
   constructor: (opts={}) ->
@@ -46,24 +47,8 @@ class BalihooAuth0Client extends AuthenticationClient
         "Authorization": "Bearer #{accessToken}"
     .then (profile) ->
       profile.permissions ?= []
-
-      # Create a userdata structure like our old stormpath client did
-      userData =
-        app: {}
-        brand: {}
-
-      for permission in profile.permissions
-        parts = permission.split "-"
-        if parts.length > 1
-          if parts[0] is "brand"
-            # It's a brand
-            userData.brand[parts[1..].join("-")] = true
-          else
-            # Assume it"s an app
-            userData.app[parts[0]] ?= {}
-            userData.app[parts[0]][parts[1..].join("-")] = true
-
-      profile.userdata = userData
+      profile.userdata = {}
+      objectPath.set profile.userdata, permission, true for permission in profile.permissions
       profile
 
     p.nodeify callback if callback

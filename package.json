@@ -1,6 +1,6 @@
 {
   "name": "balihoo-auth0-client",
-  "version": "1.0.2",
+  "version": "2.0.1",
   "description": "Auth0 client",
   "main": "lib/client.js",
   "directories": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "auth0": "2.6.0",
     "bluebird": "3.5.0",
+    "object-path": "0.11.4",
     "request-promise": "4.2.1"
   },
   "devDependencies": {
@@ -25,6 +26,7 @@
     "clone": "2.1.1",
     "coffee-script": "1.12.6",
     "mocha": "3.4.2",
-    "rewire": "2.5.2"
+    "rewire": "2.5.2",
+    "sinon": "2.3.2"
   }
 }

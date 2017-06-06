@@ -42,11 +42,12 @@ describe "BalihooAuth0Client tests", ->
           'campaigns-full-access'
         ]
         'permissions': [
-          'brand-demo'
-          'brand-test'
-          'someapp-access'
-          'someapp-edit'
-          'anotherapp-admin'
+          'brand.demo'
+          'brand.test'
+          'app.someapp.stuff.things'
+          'app.someapp.stuff.more'
+          'app.someapp.edit'
+          'app.anotherapp.admin'
         ]
         'email_verified': false
         'user_id': 'auth0|58c84bae3c9c2b7caff62252'
@@ -68,7 +69,9 @@ describe "BalihooAuth0Client tests", ->
         test: true
       app:
         someapp:
-          access: true
+          stuff:
+            things: true
+            more: true
           edit: true
         anotherapp:
           admin: true

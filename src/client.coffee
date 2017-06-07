@@ -1,20 +1,29 @@
 Promise = require "bluebird"
 auth0 = require "auth0"
 rp = require "request-promise"
-objectPath = require "object-path"
 LRU = require "lru-cache-promise"
 AuthenticationClient = auth0.AuthenticationClient
 ManagementClient = auth0.ManagementClient
+
+
+setPath = (obj, pathParts, value) ->
+  currentPathPart = pathParts[0]
+
+  if pathParts.length is 1
+    obj[currentPathPart] = value if typeof obj[currentPathPart] isnt 'object'
+    return
+
+  obj[currentPathPart] = {} if typeof obj[currentPathPart] isnt 'object'
+
+  setPath obj[currentPathPart], pathParts.slice(1), value
 
 attachUserData = (profile) ->
   profile.permissions ?= []
   profile.userdata = {}
 
   for permission in profile.permissions
-    # Make sure a deeper permission hasn't already been set
-    currentValue = objectPath.get profile.userdata, permission
-    if typeof currentValue isnt 'object'
-      objectPath.set profile.userdata, permission, true
+    permissionParts = permission.split "."
+    setPath profile.userdata, permissionParts, true
 
   profile
 

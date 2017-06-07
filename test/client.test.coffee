@@ -53,6 +53,7 @@ describe "BalihooAuth0Client tests", ->
           'app.someapp.stuff.things'
           'app.someapp.stuff.more'
           'app.someapp.edit'
+          'app.someapp'
           'app.anotherapp.admin'
         ]
         'email_verified': false

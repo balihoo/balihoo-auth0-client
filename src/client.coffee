@@ -9,7 +9,13 @@ ManagementClient = auth0.ManagementClient
 attachUserData = (profile) ->
   profile.permissions ?= []
   profile.userdata = {}
-  objectPath.set profile.userdata, permission, true for permission in profile.permissions
+
+  for permission in profile.permissions
+    # Make sure a deeper permission hasn't already been set
+    currentValue = objectPath.get profile.userdata, permission
+    if typeof currentValue isnt 'object'
+      objectPath.set profile.userdata, permission, true
+
   profile
 
 class BalihooAuth0Client extends AuthenticationClient

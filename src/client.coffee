@@ -36,6 +36,8 @@ class BalihooAuth0Client extends AuthenticationClient
     @managementClientSecret = opts.managementClientSecret
     @loginRedirectUrl = opts.loginRedirectUrl
     @logoutRedirectUrl = opts.logoutRedirectUrl
+    @authorizationApiUrl = opts.authorizationApiUrl
+
     @cache = LRU
       max: 10 # max 10 items cached
       maxAge: 1000*60*60*4 # 4 hours
@@ -67,6 +69,40 @@ class BalihooAuth0Client extends AuthenticationClient
     Promise.resolve @cache.getAsync 'managementClient', createManagementClient
     .asCallback callback
 
+  getAuthorizationToken: (callback=null) ->
+    createAuthorizationToken = =>
+      rp
+        method: 'POST'
+        uri: "https://#{@domain}/oauth/token"
+        json: true
+        body:
+          grant_type: "client_credentials"
+          client_id: @managementClientId
+          client_secret: @managementClientSecret
+          audience: "urn:auth0-authz-api"
+      .then (response) ->
+        response.access_token
+
+    Promise.resolve @cache.getAsync 'authorizationToken', createAuthorizationToken
+    .asCallback callback
+
+  getPermissionsByUserId: (userId, callback=null) ->
+    Promise.resolve @getAuthorizationToken()
+    .then (accessToken) =>
+      rp
+        json: true
+        method: "GET"
+        uri: "#{@authorizationApiUrl}/users/#{userId}/groups?expand=1"
+        headers:
+          authorization: "Bearer #{accessToken}"
+    .then (profile) ->
+      permissions = {}
+
+      for role in profile.roles
+        permissions[permission.name] = true for permission in role.permissions
+
+      Object.keys permissions
+
   getAccessToken: (code, callback=null) ->
     Promise.resolve rp
         method: "POST"
@@ -83,10 +119,16 @@ class BalihooAuth0Client extends AuthenticationClient
     .asCallback callback
 
   getUserInfoById: (userId, callback=null) ->
-    Promise.resolve @getManagementClient()
-    .then (client) ->
-      client.users.get id: userId
-    .then attachUserData
+    Promise.all [
+      @getManagementClient()
+      .then (client) ->
+        client.users.get id: userId
+
+      @getPermissionsByUserId userId
+    ]
+    .then ([profile, permissions]) ->
+      profile.permissions = permissions
+      attachUserData profile
     .asCallback callback
 
   getUserInfo: (accessToken, callback=null) ->

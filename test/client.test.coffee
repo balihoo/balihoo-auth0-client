@@ -235,6 +235,7 @@ describe "BalihooAuth0Client tests", ->
 
       mocks.stub(managementClient.users, "get").resolves fix.profile
       mocks.stub(client, "getManagementClient").resolves managementClient
+      mocks.stub(client, "getPermissionsByUserId").resolves fix.profile.permissions
 
     it 'should call the management client with expected values', ->
       client.getUserInfoById fix.profile.user_id

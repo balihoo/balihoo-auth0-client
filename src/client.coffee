@@ -37,6 +37,7 @@ class BalihooAuth0Client extends AuthenticationClient
     @loginRedirectUrl = opts.loginRedirectUrl
     @logoutRedirectUrl = opts.logoutRedirectUrl
     @authorizationApiUrl = opts.authorizationApiUrl
+    @defaultEmailDomain = opts.defaultEmailDomain or "balihoo.com"
 
     @cache = LRU
       max: 10 # max 10 items cached
@@ -145,6 +146,18 @@ class BalihooAuth0Client extends AuthenticationClient
     Promise.resolve @getAccessToken code
     .then (access_token) =>
       @getUserInfo access_token
+    .asCallback callback
+
+  getUserInfoByUsernamePassword: (username, password, callback=null) ->
+    Promise.try =>
+      if username.indexOf("@") is -1
+        username += "@#{@defaultEmailDomain}"
+
+      @database.signIn
+        username: username
+        password: password
+    .then (response) =>
+      @getUserInfo response.access_token
     .asCallback callback
 
 exports.BalihooAuth0Client = BalihooAuth0Client

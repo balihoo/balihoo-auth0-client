@@ -153,11 +153,26 @@ class BalihooAuth0Client extends AuthenticationClient
       if username.indexOf("@") is -1
         username += "@#{@defaultEmailDomain}"
 
-      @database.signIn
-        username: username
-        password: password
+      rp
+        method: 'POST'
+        uri: "https://#{@domain}/oauth/token"
+        json: true
+        body:
+          grant_type: "password"
+          client_id: @clientId
+          client_secret: @clientSecret
+          audience: "https://#{@domain}/api/v2/"
+          password: password
+          username: username
+          scope: "openid"
     .then (response) =>
       @getUserInfo response.access_token
+      .then (profile) =>
+        profile.user_id = profile.sub                   # for clients that expect to have a user_id in the object
+        @getPermissionsByUserId profile.user_id
+        .then (perms) ->
+          profile.permissions = perms
+          attachUserData profile
     .asCallback callback
 
 exports.BalihooAuth0Client = BalihooAuth0Client

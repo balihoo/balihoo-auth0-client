@@ -1,6 +1,6 @@
 {
   "name": "balihoo-auth0-client",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "Auth0 client",
   "main": "lib/client.js",
   "directories": {
@@ -18,7 +18,8 @@
     "auth0": "2.6.0",
     "bluebird": "3.5.0",
     "lru-cache-promise": "1.0.8",
-    "request-promise": "4.2.1"
+    "request": "2.88",
+    "request-promise": "4.2.4"
   },
   "devDependencies": {
     "chai": "4.0.1",

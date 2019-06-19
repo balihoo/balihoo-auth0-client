@@ -1,6 +1,6 @@
 {
-  "name": "balihoo-auth0-client",
-  "version": "2.0.11",
+  "name": "balihoo2-auth0-client",
+  "version": "2.0.12",
   "description": "Auth0 client",
   "main": "lib/client.js",
   "directories": {
@@ -12,7 +12,7 @@
     "watch": "node_modules/coffee-script/bin/coffee -cb -o lib -w src",
     "test": "node_modules/mocha/bin/mocha $(find test -name '*.test.coffee') --compilers coffee:coffee-script/register"
   },
-  "author": "Jeff Flitton",
+  "author": "Chad Norwood",
   "license": "MIT",
   "dependencies": {
     "auth0": "2.6.0",

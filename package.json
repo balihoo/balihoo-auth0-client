@@ -1,5 +1,5 @@
 {
-  "name": "balihoo2-auth0-client",
+  "name": "balihoo-auth0-client",
   "version": "2.0.12",
   "description": "Auth0 client",
   "main": "lib/client.js",
